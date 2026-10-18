@@ -1,0 +1,389 @@
+{
+  "info": {
+    "_postman_id": "00c74391-f219-4556-832c-268251b10a5f",
+    "name": "AutoLoc API - CRUD Client, Agence et Vehicule",
+    "description": "Collection CRUD ordonnee. Executer avec le Collection Runner pour que les identifiants soient automatiquement reutilises.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081"
+    },
+    {
+      "key": "clientId",
+      "value": ""
+    },
+    {
+      "key": "agenceId",
+      "value": ""
+    },
+    {
+      "key": "vehiculeId",
+      "value": ""
+    },
+    {
+      "key": "runTag",
+      "value": "postman"
+    }
+  ],
+  "item": [
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Create client",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('runTag', Date.now().toString());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Client created (201)', function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set('clientId', pm.response.json().idClient);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Dupont\",\n  \"prenom\": \"Marie\",\n  \"email\": \"marie.{{runTag}}@example.com\",\n  \"telephone\": \"22123456\",\n  \"numPermis\": \"P-{{runTag}}\",\n  \"dateInscription\": \"2026-10-18\"\n}"
+            },
+            "url": "{{baseUrl}}/api/clients"
+          }
+        },
+        {
+          "name": "List clients",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Clients listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/clients"
+          }
+        },
+        {
+          "name": "Get client",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Client retrieved (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/clients/{{clientId}}"
+          }
+        },
+        {
+          "name": "Update client",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Client updated (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Dupont\",\n  \"prenom\": \"Marie-Anne\",\n  \"email\": \"marie.{{runTag}}-upd@example.com\",\n  \"telephone\": \"22123456\",\n  \"numPermis\": \"P-{{runTag}}-UPD\",\n  \"dateInscription\": \"2026-10-18\"\n}"
+            },
+            "url": "{{baseUrl}}/api/clients/{{clientId}}"
+          }
+        },
+        {
+          "name": "Delete client",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Client deleted (204)', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/clients/{{clientId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agences",
+      "item": [
+        {
+          "name": "Create agency",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Agency created (201)', function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set('agenceId', pm.response.json().idAgence);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Agence Postman {{$guid}}\",\n  \"ville\": \"Tunis\",\n  \"adresse\": \"10 avenue Habib Bourguiba\",\n  \"telephone\": \"71123456\"\n}"
+            },
+            "url": "{{baseUrl}}/api/agences"
+          }
+        },
+        {
+          "name": "List agencies",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Agencies listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/agences"
+          }
+        },
+        {
+          "name": "Get agency",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Agency retrieved (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/agences/{{agenceId}}"
+          }
+        },
+        {
+          "name": "Update agency",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Agency updated (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Agence Postman modifiee\",\n  \"ville\": \"Sousse\",\n  \"adresse\": \"20 rue de la Republique\",\n  \"telephone\": \"73333333\"\n}"
+            },
+            "url": "{{baseUrl}}/api/agences/{{agenceId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vehicules",
+      "item": [
+        {
+          "name": "Create vehicle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Vehicle created (201)', function () { pm.response.to.have.status(201); });",
+                  "pm.collectionVariables.set('vehiculeId', pm.response.json().idVehicule);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"immatriculation\": \"PM{{runTag}}\",\n  \"marque\": \"Toyota\",\n  \"modele\": \"Corolla\",\n  \"categorie\": \"BERLINE\",\n  \"tarifJournalier\": 120.00,\n  \"statut\": \"DISPONIBLE\",\n  \"agence\": {\n    \"idAgence\": {{agenceId}}\n  }\n}"
+            },
+            "url": "{{baseUrl}}/api/vehicules"
+          }
+        },
+        {
+          "name": "List vehicles",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Vehicles listed (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicules"
+          }
+        },
+        {
+          "name": "Get vehicle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Vehicle retrieved (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/vehicules/{{vehiculeId}}"
+          }
+        },
+        {
+          "name": "Update vehicle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Vehicle updated (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"immatriculation\": \"PM{{runTag}}\",\n  \"marque\": \"Toyota\",\n  \"modele\": \"Corolla Hybrid\",\n  \"categorie\": \"BERLINE\",\n  \"tarifJournalier\": 135.00,\n  \"statut\": \"DISPONIBLE\",\n  \"agence\": {\n    \"idAgence\": {{agenceId}}\n  }\n}"
+            },
+            "url": "{{baseUrl}}/api/vehicules/{{vehiculeId}}"
+          }
+        },
+        {
+          "name": "Delete vehicle",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Vehicle deleted (204)', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/vehicules/{{vehiculeId}}"
+          }
+        },
+        {
+          "name": "Delete agency",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Agency deleted (204)', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/agences/{{agenceId}}"
+          }
+        }
+      ]
+    }
+  ]
+}

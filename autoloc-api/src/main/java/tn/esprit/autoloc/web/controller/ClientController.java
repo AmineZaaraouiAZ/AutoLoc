@@ -1,6 +1,9 @@
 package tn.esprit.autoloc.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,27 +26,46 @@ public class ClientController {
 
     private final ClientService clientService;
 
+    @Operation(summary = "Lister les clients")
+    @ApiResponse(responseCode = "200", description = "Liste des clients récupérée")
     @GetMapping
     public List<Client> getAll() {
         return clientService.getAll();
     }
 
+    @Operation(summary = "Récupérer un client")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Client récupéré"),
+            @ApiResponse(responseCode = "404", description = "Client introuvable")
+    })
     @GetMapping("/{id}")
     public Client getById(@PathVariable Long id) {
         return clientService.getById(id);
     }
 
+    @Operation(summary = "Créer un client")
+    @ApiResponse(responseCode = "201", description = "Client créé")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Client create(@RequestBody Client client) {
         return clientService.create(client);
     }
 
+    @Operation(summary = "Modifier un client")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Client modifié"),
+            @ApiResponse(responseCode = "404", description = "Client introuvable")
+    })
     @PutMapping("/{id}")
     public Client update(@PathVariable Long id, @RequestBody Client client) {
         return clientService.update(id, client);
     }
 
+    @Operation(summary = "Supprimer un client")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Client supprimé"),
+            @ApiResponse(responseCode = "404", description = "Client introuvable")
+    })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

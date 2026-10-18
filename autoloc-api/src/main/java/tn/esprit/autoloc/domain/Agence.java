@@ -1,9 +1,9 @@
 package tn.esprit.autoloc.domain;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -13,7 +13,6 @@ import java.util.List;
 @Table(name = "agence")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Agence {
 
@@ -38,4 +37,8 @@ public class Agence {
 
     @OneToMany(mappedBy = "agence", cascade = CascadeType.ALL)
     private List<Employe> employes = new ArrayList<>();
+
+    @JsonCreator
+    public Agence() {
+    }
 }
