@@ -1,50 +1,28 @@
 package tn.esprit.autoloc.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.domain.Paiement;
 import tn.esprit.autoloc.repository.PaiementRepository;
-
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PaiementServiceImpl implements PaiementService {
+public class PaiementServiceImpl implements IPaiementService {
+    private final PaiementRepository repository;
 
-    private final PaiementRepository paiementRepository;
-
-    @Override
-    public List<Paiement> getAll() {
-        return paiementRepository.findAll();
-    }
+    @Override public Paiement addPaiement(Paiement paiement) { return repository.save(paiement); }
+    @Override public List<Paiement> getAllPaiements() { return repository.findAll(); }
+    @Override public Paiement getPaiementById(Long id) { return repository.findById(id).orElse(null); }
 
     @Override
-    public Paiement getById(Long id) {
-        return paiementRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Paiement introuvable : " + id));
-    }
-
-    @Override
-    public Paiement create(Paiement paiement) {
-        return paiementRepository.save(paiement);
-    }
-
-    @Override
-    public Paiement update(Long id, Paiement paiement) {
-        checkExists(id);
-        paiement.setIdPaiement(id);
-        return paiementRepository.save(paiement);
-    }
-
-    @Override
-    public void delete(Long id) {
-        paiementRepository.delete(getById(id));
-    }
-
-    private void checkExists(Long id) {
-        if (!paiementRepository.existsById(id)) {
-            throw new EntityNotFoundException("Paiement introuvable : " + id);
+    public Paiement updatePaiement(Long id, Paiement paiement) {
+        if(repository.existsById(id)) {
+            paiement.setIdPaiement(id);
+            return repository.save(paiement);
         }
+        return null;
     }
+
+    @Override public void deletePaiement(Long id) { repository.deleteById(id); }
 }

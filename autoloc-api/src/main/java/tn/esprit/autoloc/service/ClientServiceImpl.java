@@ -1,50 +1,49 @@
 package tn.esprit.autoloc.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.autoloc.domain.Client;
 import tn.esprit.autoloc.repository.ClientRepository;
+import tn.esprit.autoloc.web.dto.ClientDto;
+import tn.esprit.autoloc.web.mapper.ClientMapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ClientServiceImpl implements ClientService {
-
+public class ClientServiceImpl implements IClientService {
     private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     @Override
-    public List<Client> getAll() {
-        return clientRepository.findAll();
+    public ClientDto addClient(ClientDto dto) {
+        Client client = clientMapper.toEntity(dto);
+        return clientMapper.toDto(clientRepository.save(client));
     }
 
     @Override
-    public Client getById(Long id) {
-        return clientRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Client introuvable : " + id));
+    public List<ClientDto> getAllClients() {
+        return clientRepository.findAll().stream().map(clientMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public Client create(Client client) {
-        return clientRepository.save(client);
+    public ClientDto getClientById(Long id) {
+        return clientRepository.findById(id).map(clientMapper::toDto).orElse(null);
     }
 
     @Override
-    public Client update(Long id, Client client) {
-        checkExists(id);
-        client.setIdClient(id);
-        return clientRepository.save(client);
-    }
-
-    @Override
-    public void delete(Long id) {
-        clientRepository.delete(getById(id));
-    }
-
-    private void checkExists(Long id) {
-        if (!clientRepository.existsById(id)) {
-            throw new EntityNotFoundException("Client introuvable : " + id);
+    public ClientDto updateClient(Long id, ClientDto dto) {
+        if (clientRepository.existsById(id)) {
+            Client client = clientMapper.toEntity(dto);
+            client.setIdClient(id);
+            return clientMapper.toDto(clientRepository.save(client));
         }
+        return null;
+    }
+
+    @Override
+    public void deleteClient(Long id) {
+        clientRepository.deleteById(id);
     }
 }

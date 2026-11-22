@@ -1,52 +1,57 @@
 package tn.esprit.autoloc.web.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import tn.esprit.autoloc.domain.Contrat;
-import tn.esprit.autoloc.service.ContratService;
+import tn.esprit.autoloc.service.IContratService;
+import tn.esprit.autoloc.web.dto.ContratDto;
 
+import java.time.LocalDate;
 import java.util.List;
 
+@Tag(name = "Contrats")
 @RestController
 @RequestMapping("/api/contrats")
 @RequiredArgsConstructor
 public class ContratController {
+    private final IContratService service;
 
-    private final ContratService contratService;
+    @PostMapping
+    public Contrat addContrat(@RequestBody Contrat contrat) {
+        return service.addContrat(contrat);
+    }
 
     @GetMapping
-    public List<Contrat> getAll() {
-        return contratService.getAll();
+    public List<Contrat> getAllContrats() {
+        return service.getAllContrats();
     }
 
     @GetMapping("/{id}")
-    public Contrat getById(@PathVariable Long id) {
-        return contratService.getById(id);
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Contrat create(@RequestBody Contrat contrat) {
-        return contratService.create(contrat);
+    public Contrat getContratById(@PathVariable Long id) {
+        return service.getContratById(id);
     }
 
     @PutMapping("/{id}")
-    public Contrat update(@PathVariable Long id, @RequestBody Contrat contrat) {
-        return contratService.update(id, contrat);
+    public Contrat updateContrat(@PathVariable Long id, @RequestBody Contrat contrat) {
+        return service.updateContrat(id, contrat);
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        contratService.delete(id);
+    public void deleteContrat(@PathVariable Long id) {
+        service.deleteContrat(id);
+    }
+    @Operation(summary = "Créer et affecter un contrat à une réservation")
+    @PostMapping("/affecter-reservation")
+    public ResponseEntity<ContratDto> affecterContratAReservation(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateSignature,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.affecterContratAReservation(dateSignature, dateDebut, dateFin));
     }
 }

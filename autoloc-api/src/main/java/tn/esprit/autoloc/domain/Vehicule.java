@@ -1,14 +1,14 @@
 package tn.esprit.autoloc.domain;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -42,18 +42,19 @@ public class Vehicule {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private StatutVehicule statut;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_agence", nullable = false)
-    @JsonIgnoreProperties({"vehicules", "employes"})
+    @ManyToOne
+    @JsonBackReference // Empêche la sérialisation inverse pour casser la boucle
     private Agence agence;
 
     @OneToMany(mappedBy = "vehicule", cascade = CascadeType.ALL)
-    private List<Maintenance> maintenances = new ArrayList<>();
+    @JsonManagedReference
+    private List<Maintenance> maintenances;
 
     @OneToMany(mappedBy = "vehicule", cascade = CascadeType.ALL)
-    private List<Equipement> equipements = new ArrayList<>();
+    @JsonManagedReference("vehicule-reservations") // Nommez les références s'il y en a plusieurs dans la même classe
+    private List<Reservation> reservations;
 
-    @OneToMany(mappedBy = "vehicule", cascade = CascadeType.ALL)
-    private List<Reservation> reservations = new ArrayList<>();
+    @ManyToMany
+    @JsonIgnoreProperties("vehicules") // Ignore la propriété "vehicules" côté Equipement pour couper la boucle
+    private List<Equipement> equipements;
 }

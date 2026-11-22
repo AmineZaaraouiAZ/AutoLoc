@@ -1,27 +1,25 @@
 package tn.esprit.autoloc.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
-@Table(name = "equipement")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Equipement {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEquipement;
-
-    @Column(nullable = false, length = 50)
     private String libelle;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_vehicule", nullable = false)
-    private Vehicule vehicule;
+    @ManyToMany(mappedBy = "equipements")
+    @JsonIgnoreProperties("equipements") // Ignore la propriété "equipements" côté Vehicule
+    private List<Vehicule> vehicules;
 }

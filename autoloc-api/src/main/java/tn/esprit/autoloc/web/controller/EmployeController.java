@@ -1,52 +1,20 @@
 package tn.esprit.autoloc.web.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tn.esprit.autoloc.domain.Employe;
-import tn.esprit.autoloc.service.EmployeService;
-
+import tn.esprit.autoloc.service.IEmployeService;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/employes")
 @RequiredArgsConstructor
 public class EmployeController {
+    private final IEmployeService service;
 
-    private final EmployeService employeService;
-
-    @GetMapping
-    public List<Employe> getAll() {
-        return employeService.getAll();
-    }
-
-    @GetMapping("/{id}")
-    public Employe getById(@PathVariable Long id) {
-        return employeService.getById(id);
-    }
-
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Employe create(@RequestBody Employe employe) {
-        return employeService.create(employe);
-    }
-
-    @PutMapping("/{id}")
-    public Employe update(@PathVariable Long id, @RequestBody Employe employe) {
-        return employeService.update(id, employe);
-    }
-
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        employeService.delete(id);
-    }
+    @PostMapping public Employe addEmploye(@RequestBody Employe employe) { return service.addEmploye(employe); }
+    @GetMapping public List<Employe> getAllEmployes() { return service.getAllEmployes(); }
+    @GetMapping("/{id}") public Employe getEmployeById(@PathVariable Long id) { return service.getEmployeById(id); }
+    @PutMapping("/{id}") public Employe updateEmploye(@PathVariable Long id, @RequestBody Employe employe) { return service.updateEmploye(id, employe); }
+    @DeleteMapping("/{id}") public void deleteEmploye(@PathVariable Long id) { service.deleteEmploye(id); }
 }
